@@ -58,7 +58,7 @@ class GASearch:
             #print_population(population, fitness_values)
 
             # Replacement Selection
-            population, fitness_values = self._apply_replacement(population, fitness_values)
+            population, fitness_values = self._apply_replacement(population, fitness_values, 10)
 
             #print("after replacement")
             #print_population(population, fitness_values)
@@ -67,6 +67,9 @@ class GASearch:
             # Report
             print_epoch_stats(epoch_num, sum(fitness_values) / len(fitness_values), max(fitness_values))
             #print_population(population, fitness_values)
+
+        # Final Report
+        print_population(population[:10], fitness_values[:10])
 
     def _init_population(self):
         """
@@ -115,10 +118,16 @@ class GASearch:
         return parents
 
     @staticmethod
-    def _apply_replacement(population, fitness_values):
+    def _apply_replacement(population, fitness_values, top_n=1):
         """
-        Remove half the population at random.
+        Keeps top n best solutions + uniformly selected random subset of remaining such that total is half of previous.
         Returns the new population and its corresponding fitness values.
         """
-        to_keep = random.sample(range(len(population)), len(population) // 2)
-        return [population[i] for i in to_keep], [fitness_values[i] for i in to_keep]
+        n_to_keep = len(population) // 2 - top_n
+
+        indices_elite = [p[0] for p in sorted(zip(range(len(fitness_values)), fitness_values), key=lambda x: x[1], reverse=True)[:top_n]]
+        elite_solns = [population.pop(i) for i in indices_elite]
+        elite_fitness_vals = [fitness_values.pop(i) for i in indices_elite]
+
+        to_keep = random.sample(range(len(population)), n_to_keep)
+        return elite_solns + [population[i] for i in to_keep], elite_fitness_vals + [fitness_values[i] for i in to_keep]

@@ -6,11 +6,12 @@ from utils import find_slot
 
 
 class GASearch:
-    def __init__(self, pop_size=10, mutation_rate=0.1, xover_rate=0.8, soln_len=5):
+    def __init__(self, pop_size=1000, mutation_rate=0.05, xover_rate=0.75, soln_len=32, top_n=10):
         self._pop_size = pop_size
         self._mutation_rate = mutation_rate
         self._xover_rate = xover_rate
         self._soln_len = soln_len
+        self._top_n = top_n
 
     def search(self, num_epochs):
         def print_epoch_stats(epoch_num, epoch_fitness, best_fitness):
@@ -58,7 +59,7 @@ class GASearch:
             #print_population(population, fitness_values)
 
             # Replacement Selection
-            population, fitness_values = self._apply_replacement(population, fitness_values, 10)
+            population, fitness_values = self._apply_replacement(population, fitness_values, self._top_n)
 
             #print("after replacement")
             #print_population(population, fitness_values)
@@ -69,7 +70,7 @@ class GASearch:
             #print_population(population, fitness_values)
 
         # Final Report
-        print_population(population[:10], fitness_values[:10])
+        print_population(population[:self._top_n], fitness_values[:self._top_n])
 
     def _init_population(self):
         """

@@ -70,7 +70,9 @@ class GASearch:
             #print_population(population, fitness_values)
 
         # Final Report
-        print_population(population[:self._top_n], fitness_values[:self._top_n])
+        solns_and_fitness_vals = sorted(zip(population, fitness_values), key=lambda x: x[1])
+        solns, fitness_vals = zip(*solns_and_fitness_vals)
+        print_population(solns, fitness_vals)
 
     def _init_population(self):
         """

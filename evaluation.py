@@ -16,7 +16,9 @@ def apply_colatz(n: int, limit: int = 10000):
     current_increasing_seq_len = 0
     increasing_seq_start_val = n
     hist = [n]
-    while 1 < n and len(hist) < limit:
+    while 1 < n:
+        if len(hist) >= limit:
+            raise RuntimeError("Max sequence length of {} exceeded.".format(limit))
         if n % 2 == 0:
             n = n // 2
 

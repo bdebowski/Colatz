@@ -125,9 +125,18 @@ class GASearch:
         """
         n_to_keep = len(population) // 2 - top_n
 
-        indices_elite = [p[0] for p in sorted(zip(range(len(fitness_values)), fitness_values), key=lambda x: x[1], reverse=True)[:top_n]]
-        elite_solns = [population.pop(i) for i in indices_elite]
-        elite_fitness_vals = [fitness_values.pop(i) for i in indices_elite]
+        indices_and_fitness_values = sorted(zip(range(len(fitness_values)), fitness_values), key=lambda x: x[1], reverse=True)
+        indices_elite = []
+        elite_solns = set()
+        i = 0
+        while len(indices_elite) < top_n:
+            soln_index = indices_and_fitness_values[i][0]
+            soln = Solution.as_string(population[soln_index])
+            if soln not in elite_solns:
+                elite_solns.add(soln)
+                indices_elite.append(soln_index)
+            i += 1
 
-        to_keep = random.sample(range(len(population)), n_to_keep)
-        return elite_solns + [population[i] for i in to_keep], elite_fitness_vals + [fitness_values[i] for i in to_keep]
+        indices_not_elite = list(set(range(len(population))) - set(indices_elite))
+        to_keep = random.sample(indices_not_elite, n_to_keep)
+        return [population[i] for i in indices_elite + to_keep], [fitness_values[i] for i in indices_elite + to_keep]

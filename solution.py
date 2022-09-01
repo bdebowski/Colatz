@@ -34,7 +34,7 @@ class Solution:
         Crossover happens at a rate specified by r.
         """
         if random.random() <= r:
-            crossover_index = len(s1) // 2
+            crossover_index = random.randint(1, len(s1) - 1)
             child1 = s1[:crossover_index] + s2[crossover_index:]
             child2 = s2[:crossover_index] + s1[crossover_index:]
         else:
